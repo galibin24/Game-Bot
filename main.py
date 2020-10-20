@@ -11,29 +11,15 @@ from pynput.keyboard import Key, Controller as KeyboardController
 # TODO solve cannot pick up when stack in an object
 # TODO if out of range more than 5 times then run to towards closest enemy 
 
-#  
-
 # inital window size 0, 40, 1020,720
 WINDOW = (0, 40, 810, 647)
 
 HERO = (896,643)
 MAP = (704, 522, 784, 602)
-# MAP = (856, 603, 936, 683)
-
 
 keyboard = KeyboardController()
- 
-# tracking many
 
-# relative positioning()
-
-# action class(name, button )
-
-# window-capture class(color, cordinates, )
-
-# diffrent landscape will have diffrent distance on the map, hence a better measure should be in place
-
-# check the color of image
+# check the color of image at mouse position
 def get_color_at():
     mouse_position = pyautogui.position()
     grab_position = (mouse_position.x, mouse_position.y, mouse_position.x, mouse_position.y)
@@ -43,22 +29,18 @@ def get_color_at():
 
 # check for color in certain region
 """ 
-    lower_tresh: array of color,
-    higher_tresh: arry of color,
+    lower_tresh: array of color(lower bound),
+    higher_tresh: arry of color(upper bound),
     coordinates: array of [x, y]
 """
 def color_definer(lower_tresh = [97, 107,  32],higher_tresh = [130, 157,  72], coordinates = None):
     cord = (coordinates[0], coordinates[1], coordinates[0], coordinates[1])
     map1 = grab_screen(cord)
-    # the tresholds
+
     lower_treshold = np.array(lower_tresh)
     upper_treshold = np.array(higher_tresh)
 
     mask = cv2.inRange(map1, lower_treshold, upper_treshold)
-
-    # res shows the diffrence in pixels from captured pic and set pic
-    # if pictures are same returns treshold amount in array form
-    # if picture is diffrent from treshold returns [0,0,0]
     res = cv2.bitwise_and(map1, map1, mask=mask)
     # indic checks where res is not [0]
     # or where color is similar
@@ -71,11 +53,6 @@ def color_definer(lower_tresh = [97, 107,  32],higher_tresh = [130, 157,  72], c
         return True 
     else:
         return False
-
-
-
-# find the mosnter
-
     
 
 # problem with closest monster being too far
@@ -83,6 +60,14 @@ def attacking():
     buttons = utils.Custom_Button()
     buttons.attack_pattern()
 
+"""
+    initializes hero and monster class 
+    health/mana check
+    finds closest enemy 
+    cheking if monster in range 
+    attacks
+
+"""
 def hunting():
     keyboard.press('d')
     monster = Monster()
@@ -144,7 +129,9 @@ def hunting():
     else:
         return
         
-
+"""
+    monster class responsible for updating mosnter info 
+"""
 class Monster():
     def __init__(self, *args, **kwargs):
         self.damaged = False
@@ -188,7 +175,9 @@ class Monster():
                 break
                   
         
-
+"""
+    hero class responsible for updating our character info 
+"""
 class Hero():
     def __init__(self, *args, **kwargs):
         self.health = 100 # [217  59  52]
@@ -255,7 +244,10 @@ class Hero():
         return
 
 
-
+"""
+    captures screen
+    start hunting()
+"""
 def main():
     handle = win32gui.FindWindow(None, "AION Client")
     win32gui.SetForegroundWindow(handle)
@@ -266,31 +258,11 @@ def main():
     win32gui.SetForegroundWindow(handle)
     
     while True:
-        # print('looping')
         hunting()
-        # cv2.imshow('hi',  grab_screen(MAP))
-        # print(pyautogui.position())
-        # buttons = utils.Custom_Button()
-        # print(buttons.mana_cooldown())
-        # buttons.all_reload_checker()
-        # for i in range(14):
-        #     if i == 0:
-        #         continue
-        #     buttons.attack_buttons(i,1)
-        #     buttons.attack_buttons(i,2)
-        #     buttons.attack_buttons(i,3)
-        # get_color_at()
-        # print()
-        # print(f'Monster Found: {monster.found}, Monster Damaged: {monster.damaged}, Monster Alive: {monster.alive}')
-        
-    
-        # monster_dist = monster_distance()
-        
-
         
     if cv2.waitKey(33) == ord('a') & 0xFF:
         return False
 
-main()
 
-# Point(x=335, y=696)
+if __name__ == "__main__":
+    main()

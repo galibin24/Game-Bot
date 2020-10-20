@@ -13,7 +13,8 @@ MAP = (704, 522, 784, 602)
 # TODO optimizing attacking
     # each button have individual cooldown
     # if button on cooldown skip button
-    # 
+
+
 keyboard = KeyboardController()
 mouse = MouseController()
 
@@ -24,9 +25,7 @@ def white():
     upper_white = np.array([0,0,255])
     mask = cv2.inRange(map1, lower_white, upper_white)
     res = cv2.bitwise_and(map1, map1, mask=mask)
-    
-    
-    
+
     coord=cv2.findNonZero(mask)
     if coord is None:
         return np.empty((60, 1, 2))
@@ -71,13 +70,6 @@ def monster_distance():
     Map = grab_screen(MAP)
     red_indic = red()
     white_indic = white()
-    # print(red_indic.shape)
-    # print(white_indic.shape)
-    # if red_indic is None:
-    #     red_indic = monster_distance()
-    # if white_indic is None:
-    #     white_indic = monster_distance()
-    
     
     main_indic = np.concatenate((red_indic, white_indic))
     
@@ -90,7 +82,6 @@ def monster_distance():
     for i in main_indic:
         x2 = i[0][0]
         y2 = i[0][1]
-        # print(f"me on x {x1} monster on x {x2} me on y {y1} monster on y{y2}")
         distance = math.sqrt( ((x1-x2)**2)+((y1-y2)**2) )
         ind_l.append(distance)
     
@@ -105,14 +96,12 @@ def monster_distance():
 # measure distance to monster
 def find_closest():
     how_long = 2.8
-    # print( monster_distance())
-    # rotate to find closest target
+    
     start = time.time()
     first_distance = monster_distance()
     if first_distance is None:
         return None
     
-        
     time_dist = [utils.round_up(time.time() - start, 1), first_distance]
     while True: 
         keyboard.press('d')
@@ -140,9 +129,6 @@ def find_closest():
     keyboard.press('d')
     
     while True:
-        # print(utils.round_up(monster_distance(), 1))
-        # print(utils.round_up(turn_to_closest, 1))
-        # print(time_dist[0])
         
         print(utils.round_up(time.time() - second_start, 1))
         second_new_distance = monster_distance()
@@ -185,8 +171,6 @@ class Custom_Button():
         mouse.release(Button.right)
 
     def attack_buttons(self, row, column):
-        # provide min collumn of 1
-        # provide min row of 1
 
         x = 27*row + 227
         y = 638 - 27*column 
@@ -207,15 +191,11 @@ class Custom_Button():
         return reloading
 
     def all_reload_checker_loop(self):
-        # [[[105  26  78]]] color at Point(x=610, y=695)
-        # reloading = check_color([610,695], [105,26,78])
         while True:
             reloading = check_color([498,612], [100,  48,  32])
             if reloading:
-                
                 pass
             else:
-               
                 return 
 
     def attack_pattern(self):
@@ -223,8 +203,7 @@ class Custom_Button():
         self.all_reload_checker_loop()
         self.attack_buttons(3,1)
         self.all_reload_checker_loop()
-        # check if next attacj possible and old attack still cooldowning
-        # infinite loop inside a function here untill possible
+
         self.attack_buttons(1,1)
         self.all_reload_checker_loop()
         self.attack_buttons(1,1)
@@ -236,8 +215,6 @@ class Custom_Button():
         self.all_reload_checker_loop()
         self.attack_buttons(2,1)
         self.all_reload_checker_loop()
-
-
 
         # check if next attacj possible
         self.attack_buttons(4,1)
